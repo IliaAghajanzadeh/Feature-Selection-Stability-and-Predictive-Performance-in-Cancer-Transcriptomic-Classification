@@ -1,0 +1,62 @@
+{
+  "breast_cancer": {
+    "2": {
+      "jac_med": 0.3333,
+      "jac_mean": 0.3333,
+      "chance": 0.0435,
+      "distinct": 3
+    },
+    "4": {
+      "jac_med": 1.0,
+      "jac_mean": 1.0,
+      "chance": 0.0805,
+      "distinct": 1
+    },
+    "8": {
+      "jac_med": 0.7778,
+      "jac_mean": 0.7778,
+      "chance": 0.1591,
+      "distinct": 4
+    }
+  },
+  "colon": {
+    "2": {
+      "jac_med": 0.0,
+      "jac_mean": 0.0,
+      "chance": 0.0005,
+      "distinct": 10
+    },
+    "4": {
+      "jac_med": 0.0,
+      "jac_mean": 0.0,
+      "chance": 0.0012,
+      "distinct": 10
+    },
+    "8": {
+      "jac_med": 0.1429,
+      "jac_mean": 0.1429,
+      "chance": 0.0022,
+      "distinct": 10
+    }
+  },
+  "leukemia": {
+    "2": {
+      "jac_med": 0.3333,
+      "jac_mean": 0.3333,
+      "chance": 0.0001,
+      "distinct": 10
+    },
+    "4": {
+      "jac_med": 0.1429,
+      "jac_mean": 0.1429,
+      "chance": 0.0003,
+      "distinct": 10
+    },
+    "8": {
+      "jac_med": 0.3333,
+      "jac_mean": 0.3333,
+      "chance": 0.0005,
+      "distinct": 10
+    }
+  }
+}

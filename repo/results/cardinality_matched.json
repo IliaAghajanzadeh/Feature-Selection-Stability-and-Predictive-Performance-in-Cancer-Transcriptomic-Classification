@@ -1,0 +1,127 @@
+{
+  "breast_cancer": {
+    "2": {
+      "nsga_phi": 0.2024,
+      "mrmr_phi": 0.6667,
+      "nsga_k_achieved": [
+        2
+      ],
+      "exact_match": true,
+      "nsga_jac_med": 0.0,
+      "mrmr_jac_med": 0.3333,
+      "mrmr_oob_med": 0.9279
+    },
+    "4": {
+      "nsga_phi": 0.2042,
+      "mrmr_phi": 1.0,
+      "nsga_k_achieved": [
+        3,
+        4,
+        5
+      ],
+      "exact_match": false,
+      "nsga_jac_med": 0.1667,
+      "mrmr_jac_med": 1.0,
+      "mrmr_oob_med": 0.9346
+    },
+    "8": {
+      "nsga_phi": 0.1852,
+      "mrmr_phi": 0.8523,
+      "nsga_k_achieved": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ],
+      "exact_match": false,
+      "nsga_jac_med": 0.1818,
+      "mrmr_jac_med": 0.7778,
+      "mrmr_oob_med": 0.9323
+    }
+  },
+  "colon": {
+    "2": {
+      "nsga_phi": -0.0011,
+      "mrmr_phi": 0.1213,
+      "nsga_k_achieved": [
+        2,
+        3
+      ],
+      "exact_match": false,
+      "nsga_jac_med": 0.0,
+      "mrmr_jac_med": 0.0,
+      "mrmr_oob_med": 0.6804
+    },
+    "4": {
+      "nsga_phi": 0.0088,
+      "mrmr_phi": 0.1093,
+      "nsga_k_achieved": [
+        2,
+        4,
+        5
+      ],
+      "exact_match": false,
+      "nsga_jac_med": 0.0,
+      "mrmr_jac_med": 0.0,
+      "mrmr_oob_med": 0.7483
+    },
+    "8": {
+      "nsga_phi": 0.0119,
+      "mrmr_phi": 0.2107,
+      "nsga_k_achieved": [
+        4,
+        5,
+        7,
+        8,
+        9
+      ],
+      "exact_match": false,
+      "nsga_jac_med": 0.0,
+      "mrmr_jac_med": 0.1429,
+      "mrmr_oob_med": 0.7751
+    }
+  },
+  "leukemia": {
+    "2": {
+      "nsga_phi": -0.0003,
+      "mrmr_phi": 0.3109,
+      "nsga_k_achieved": [
+        2
+      ],
+      "exact_match": true,
+      "nsga_jac_med": 0.0,
+      "mrmr_jac_med": 0.3333,
+      "mrmr_oob_med": 0.8837
+    },
+    "4": {
+      "nsga_phi": 0.0048,
+      "mrmr_phi": 0.3107,
+      "nsga_k_achieved": [
+        3,
+        4,
+        5
+      ],
+      "exact_match": false,
+      "nsga_jac_med": 0.0,
+      "mrmr_jac_med": 0.1429,
+      "mrmr_oob_med": 0.9237
+    },
+    "8": {
+      "nsga_phi": 0.0157,
+      "mrmr_phi": 0.4744,
+      "nsga_k_achieved": [
+        4,
+        5,
+        7,
+        8,
+        9
+      ],
+      "exact_match": false,
+      "nsga_jac_med": 0.0,
+      "mrmr_jac_med": 0.3333,
+      "mrmr_oob_med": 0.9705
+    }
+  }
+}

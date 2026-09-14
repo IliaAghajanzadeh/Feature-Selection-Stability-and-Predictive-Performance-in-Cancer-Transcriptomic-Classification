@@ -1,0 +1,86 @@
+{
+  "breast_cancer|bootstrap_fixed|front": {
+    "kbar": 7.2,
+    "obs_med": 0.3333333333333333,
+    "obs_mean": 0.35165353165353164,
+    "chance_med": 0.13333333333333333,
+    "chance_mean": 0.1382812760278937
+  },
+  "breast_cancer|bootstrap_fixed|point": {
+    "kbar": 2.3,
+    "obs_med": 0.0,
+    "obs_mean": 0.19888888888888887,
+    "chance_med": 0.0,
+    "chance_mean": 0.049304999999999995
+  },
+  "breast_cancer|seed_control|front": {
+    "kbar": 6.5,
+    "obs_med": 0.42857142857142855,
+    "obs_mean": 0.43395777062443724,
+    "chance_med": 0.09090909090909091,
+    "chance_mean": 0.12661574605949608
+  },
+  "breast_cancer|seed_control|point": {
+    "kbar": 2.1,
+    "obs_med": 0.3333333333333333,
+    "obs_mean": 0.35185185185185186,
+    "chance_med": 0.0,
+    "chance_mean": 0.04617916666666666
+  },
+  "colon|bootstrap_fixed|front": {
+    "kbar": 18.6,
+    "obs_med": 0.0,
+    "obs_mean": 0.005932113670942549,
+    "chance_med": 0.0,
+    "chance_mean": 0.00377926216452675
+  },
+  "colon|bootstrap_fixed|point": {
+    "kbar": 4.5,
+    "obs_med": 0.0,
+    "obs_mean": 0.0034391534391534392,
+    "chance_med": 0.0,
+    "chance_mean": 0.0012097691197691198
+  },
+  "colon|seed_control|front": {
+    "kbar": 23.4,
+    "obs_med": 0.016666666666666666,
+    "obs_mean": 0.017957238573725363,
+    "chance_med": 0.0,
+    "chance_mean": 0.00586970902133537
+  },
+  "colon|seed_control|point": {
+    "kbar": 5.0,
+    "obs_med": 0.0,
+    "obs_mean": 0.010828369161702496,
+    "chance_med": 0.0,
+    "chance_mean": 0.0012591002053502051
+  },
+  "leukemia|bootstrap_fixed|front": {
+    "kbar": 14.6,
+    "obs_med": 0.0,
+    "obs_mean": 0.0066597381909720066,
+    "chance_med": 0.0,
+    "chance_mean": 0.0008291540180288159
+  },
+  "leukemia|bootstrap_fixed|point": {
+    "kbar": 3.6,
+    "obs_med": 0.0,
+    "obs_mean": 0.005555555555555556,
+    "chance_med": 0.0,
+    "chance_mean": 0.0002763690476190476
+  },
+  "leukemia|seed_control|front": {
+    "kbar": 16.6,
+    "obs_med": 0.0,
+    "obs_mean": 0.010259420268818764,
+    "chance_med": 0.0,
+    "chance_mean": 0.0011119082787883646
+  },
+  "leukemia|seed_control|point": {
+    "kbar": 4.2,
+    "obs_med": 0.0,
+    "obs_mean": 0.01675485008818342,
+    "chance_med": 0.0,
+    "chance_mean": 0.000310734126984127
+  }
+}

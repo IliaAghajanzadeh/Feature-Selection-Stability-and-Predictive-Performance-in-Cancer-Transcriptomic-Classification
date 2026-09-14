@@ -1,0 +1,70 @@
+{
+  "bootstrap_fixed": {
+    "front_level": {
+      "stability": 0.006290159173262144,
+      "M": 10,
+      "p": 2000,
+      "kbar": 18.6,
+      "numer": 0.00915555555555556,
+      "denom": 0.009213510000000001
+    },
+    "point_level": {
+      "stability": 0.007643741628540757,
+      "M": 10,
+      "p": 2000,
+      "kbar": 4.5,
+      "numer": 0.0022277777777777777,
+      "denom": 0.0022449375
+    },
+    "dataset": "colon",
+    "n_samples": 62,
+    "n_features": 2000,
+    "n_bootstraps": 10,
+    "front_sizes": [
+      7,
+      7,
+      6,
+      8,
+      4,
+      6,
+      8,
+      6,
+      2,
+      12
+    ]
+  },
+  "seed_control": {
+    "front_level": {
+      "stability": 0.023715169285002613,
+      "M": 10,
+      "p": 2000,
+      "kbar": 23.4,
+      "numer": 0.011288888888888892,
+      "denom": 0.011563109999999998
+    },
+    "point_level": {
+      "stability": 0.019771651350598662,
+      "M": 10,
+      "p": 2000,
+      "kbar": 5.0,
+      "numer": 0.002444444444444445,
+      "denom": 0.0024937500000000003
+    },
+    "dataset": "colon_SEED_CONTROL",
+    "n_samples": 62,
+    "n_features": 2000,
+    "n_bootstraps": 10,
+    "front_sizes": [
+      5,
+      8,
+      7,
+      8,
+      6,
+      6,
+      5,
+      7,
+      9,
+      7
+    ]
+  }
+}

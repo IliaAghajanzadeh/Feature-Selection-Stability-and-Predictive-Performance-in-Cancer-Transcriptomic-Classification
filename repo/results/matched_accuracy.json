@@ -1,0 +1,100 @@
+{
+  "breast_cancer": {
+    "2": {
+      "nsga": 0.911,
+      "mrmr": 0.9279,
+      "exact": true,
+      "k_ach": [
+        2
+      ]
+    },
+    "4": {
+      "nsga": 0.9474,
+      "mrmr": 0.9346,
+      "exact": false,
+      "k_ach": [
+        3,
+        4,
+        5
+      ]
+    },
+    "8": {
+      "nsga": 0.9579,
+      "mrmr": 0.9323,
+      "exact": false,
+      "k_ach": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8
+      ]
+    }
+  },
+  "colon": {
+    "2": {
+      "nsga": 0.6162,
+      "mrmr": 0.6804,
+      "exact": false,
+      "k_ach": [
+        2,
+        3
+      ]
+    },
+    "4": {
+      "nsga": 0.6722,
+      "mrmr": 0.7483,
+      "exact": false,
+      "k_ach": [
+        2,
+        4,
+        5
+      ]
+    },
+    "8": {
+      "nsga": 0.6599,
+      "mrmr": 0.7751,
+      "exact": false,
+      "k_ach": [
+        4,
+        5,
+        7,
+        8,
+        9
+      ]
+    }
+  },
+  "leukemia": {
+    "2": {
+      "nsga": 0.7522,
+      "mrmr": 0.8837,
+      "exact": true,
+      "k_ach": [
+        2
+      ]
+    },
+    "4": {
+      "nsga": 0.7798,
+      "mrmr": 0.9237,
+      "exact": false,
+      "k_ach": [
+        3,
+        4,
+        5
+      ]
+    },
+    "8": {
+      "nsga": 0.7743,
+      "mrmr": 0.9705,
+      "exact": false,
+      "k_ach": [
+        4,
+        5,
+        7,
+        8,
+        9
+      ]
+    }
+  }
+}

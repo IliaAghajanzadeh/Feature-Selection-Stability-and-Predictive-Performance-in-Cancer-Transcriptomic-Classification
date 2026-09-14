@@ -1,0 +1,165 @@
+{
+  "_README": "AUTHORITATIVE FINAL NUMBERS. seed_control rows here are the CV-MATCHED condition (single fixed bootstrap draw), which SUPERSEDES the earlier confounded seed-control. Do not use results/final_analysis.json for seed_control - it holds the stale values. FIXED: oob_set_size previously held the run count (10) by mistake; it is now oob_set_size_mean (206/22/26) with n_runs separate.",
+  "stability": {
+    "breast_cancer": {
+      "n": 10,
+      "p": 30,
+      "bootstrap": {
+        "phi_front": 0.3665,
+        "phi_point": 0.1576,
+        "jaccard_front_median": 0.3333,
+        "jaccard_front_mean": 0.3517,
+        "chance_mean": 0.1383
+      },
+      "seed_control_MATCHED": {
+        "phi_front": 0.4924,
+        "phi_point": 0.4368,
+        "jaccard_front_median": 0.4545
+      }
+    },
+    "colon": {
+      "n": 10,
+      "p": 2000,
+      "bootstrap": {
+        "phi_front": 0.0063,
+        "phi_point": 0.0076,
+        "jaccard_front_median": 0.0,
+        "jaccard_front_mean": 0.0059,
+        "chance_mean": 0.0038
+      },
+      "seed_control_MATCHED": {
+        "phi_front": 0.0112,
+        "phi_point": -0.0022,
+        "jaccard_front_median": 0.0
+      }
+    },
+    "leukemia": {
+      "n": 10,
+      "p": 7070,
+      "bootstrap": {
+        "phi_front": 0.0086,
+        "phi_point": 0.0057,
+        "jaccard_front_median": 0.0,
+        "jaccard_front_mean": 0.0067,
+        "chance_mean": 0.0008
+      },
+      "seed_control_MATCHED": {
+        "phi_front": 0.0079,
+        "phi_point": 0.018,
+        "jaccard_front_median": 0.0
+      }
+    }
+  },
+  "accuracy": {
+    "breast_cancer": {
+      "optimized_median": 0.9473,
+      "oob_median": 0.9296,
+      "oob_iqr": [
+        0.9055,
+        0.9391
+      ],
+      "oob_range": [
+        0.8989,
+        0.9581
+      ],
+      "optimism_gap": 0.0177,
+      "median_n_features": 2.0,
+      "n_runs": 10,
+      "oob_set_size_mean": 206,
+      "oob_set_size_range": [
+        199,
+        218
+      ]
+    },
+    "colon": {
+      "optimized_median": 0.9035,
+      "oob_median": 0.6797,
+      "oob_iqr": [
+        0.6352,
+        0.7266
+      ],
+      "oob_range": [
+        0.3283,
+        0.8697
+      ],
+      "optimism_gap": 0.2237,
+      "median_n_features": 4.0,
+      "n_runs": 10,
+      "oob_set_size_mean": 22,
+      "oob_set_size_range": [
+        16,
+        27
+      ]
+    },
+    "leukemia": {
+      "optimized_median": 0.9459,
+      "oob_median": 0.7743,
+      "oob_iqr": [
+        0.7336,
+        0.8033
+      ],
+      "oob_range": [
+        0.6845,
+        0.9722
+      ],
+      "optimism_gap": 0.1716,
+      "median_n_features": 3.5,
+      "n_runs": 10,
+      "oob_set_size_mean": 26,
+      "oob_set_size_range": [
+        18,
+        28
+      ]
+    }
+  },
+  "disjoint_subset_test": {
+    "breast_cancer": {
+      "n_runs": 10,
+      "oob_n": 207,
+      "acc_med": 0.9030303030303031,
+      "acc_min": 0.8963636363636365,
+      "acc_max": 0.9543939393939394,
+      "acc_iqr": [
+        0.9001515151515151,
+        0.9030303030303031
+      ],
+      "n_disjoint": 13,
+      "n_overlap": 32,
+      "disjoint_med_diff": 0.05136363636363628,
+      "disjoint_max_diff": 0.0542424242424242,
+      "overlap_med_diff": 0.002878787878787925
+    },
+    "colon": {
+      "n_runs": 10,
+      "oob_n": 24,
+      "acc_med": 0.59375,
+      "acc_min": 0.46875,
+      "acc_max": 0.78125,
+      "acc_iqr": [
+        0.5390625,
+        0.75
+      ],
+      "n_disjoint": 45,
+      "n_overlap": 0,
+      "disjoint_med_diff": 0.125,
+      "disjoint_max_diff": 0.3125,
+      "overlap_med_diff": null
+    },
+    "leukemia": {
+      "n_runs": 10,
+      "oob_n": 28,
+      "acc_med": 0.8362573099415205,
+      "acc_min": 0.5847953216374269,
+      "acc_max": 0.9736842105263157,
+      "acc_iqr": [
+        0.810672514619883,
+        0.864766081871345
+      ],
+      "n_disjoint": 42,
+      "n_overlap": 3,
+      "disjoint_med_diff": 0.10818713450292394,
+      "disjoint_max_diff": 0.38888888888888884,
+      "overlap_med_diff": 0.11111111111111105
+    }
+  }
+}

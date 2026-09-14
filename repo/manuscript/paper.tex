@@ -1,0 +1,606 @@
+%% IEEE conference paper. Compile with the conference-supplied IEEEtran.cls.
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{calc}
+\usepackage{ragged2e}
+\providecommand{\real}[1]{#1}
+
+\usepackage{textcomp}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage{longtable}
+\providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+\begin{document}
+
+\title{Predictive Performance Does Not Imply Reproducible Feature Selection: A Controlled Study of NSGA-II with Random-Search and Filter Baselines}
+\author{\IEEEauthorblockN{Ilia Aghajanzadeh}
+\IEEEauthorblockA{\textit{Department of Computer Engineering}\\
+\textit{University}\\
+Email: ilia.aghajanzadeh@example.com}}
+\maketitle
+
+\begin{abstract}
+Evolutionary multi-objective algorithms are widely used for feature selection and are typically evaluated by the predictive accuracy of the subsets they return. Less often examined is whether the \emph{identity} of the returned subset is reproducible --- a property that matters whenever selected features are interpreted, as is common in biomedical applications. We report a controlled study of NSGA-II feature selection on three datasets, with two baselines chosen to test competing explanations for any instability we find. On two high-dimensional microarray datasets the median pair of independent runs shares no features at all, while held-out balanced accuracy remains informative (Leukemia: 0.774 median out-of-bag accuracy from a median of 3.5 of 7070 features). We report every agreement statistic against an explicit chance baseline, having found that the intuitive figure --- 84\% of run pairs sharing nothing --- is in fact \emph{better} than the 97\% expected by chance at these subset sizes. Three controls constrain the explanation. First, holding a single bootstrap draw fixed so that only the optimizer seed varies improves stability substantially on a low-dimensional reference dataset but produces no detectable improvement on either high-dimensional dataset. Second, NSGA-II outperforms budget-matched random search in all six stability comparisons, so the instability is not merely a symptom of an inadequate search budget. Third, an mRMR filter baseline is more stable in all nine cardinality-matched comparisons, including two in which every run selected exactly two features (Leukemia: Phi 0.311 vs $-$0.000), so the instability is not an artifact of NSGA-II's varying subset size. Crucially, mRMR is not itself reproducible: on both microarray datasets it returned ten distinct subsets in ten bootstraps at every k, and on Colon its median pair also shares no features. Feature identity is therefore poorly reproducible for both methods, with the wrapper substantially worse. On held-out accuracy the direction is dataset-dependent: mRMR is higher on both microarray datasets, while NSGA-II is higher on the low-dimensional reference dataset at k = 4 and k = 8. We also document a silent duplicate-sample leakage mode in bootstrap-based stability protocols, and show that two standard confidence-interval estimators for the stability coefficient are unreliable at these sample sizes. We make no causal claim about dimensionality and no general claim that filters outperform wrappers.
+\end{abstract}
+
+\begin{IEEEkeywords}
+feature selection, stability, NSGA-II, multi-objective optimization, high-dimensional data, reproducibility
+\end{IEEEkeywords}
+
+\section{INTRODUCTION}
+
+Feature selection is a standard component of classification pipelines for high-dimensional data, and evolutionary multi-objective algorithms are a common choice for it. Formulating the task as simultaneous maximization of predictive accuracy and minimization of subset size makes it a natural fit for NSGA-II [5], an approach introduced for feature selection by Hamdani et al.~[4] and developed extensively since.
+
+Such methods are usually evaluated by the accuracy of the subsets they return. A less frequently examined question is whether the identity of the returned subset is reproducible: run the same procedure again, and are the same features selected?
+
+This matters because of how selected subsets are used. In biomedical applications the selected features are often interpreted --- as candidate biomarkers, or as evidence about which measurements carry discriminative signal. That interpretation assumes the subset is a property of the data rather than an artifact of one run.
+
+Feature-selection stability has been studied for close to two decades [2], [6], and the canonical definition [1] recognizes two sources of variation: sensitivity to data sampling, and sensitivity arising from an algorithm's own stochastic nature. Empirically, however, much of the literature we surveyed has concentrated on the first. The standard design perturbs the training data and measures the resulting disagreement. For a deterministic selector this suffices. For a stochastic selector it does not: the two sources are confounded.
+
+This paper reports a controlled study that isolates the contribution of data resampling, and quantifies the resulting instability against explicit chance baselines. We note at the outset that the complementary condition does not isolate optimizer stochasticity alone: it also absorbs tie-breaking among solutions that the fitness estimator cannot distinguish (Section V-C).
+
+\textbf{Contributions.}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Quantification of a performance--reproducibility gap, reported against explicit chance baselines and using held-out rather than optimized accuracy.
+\item
+  Three controls that narrow the explanation for it: fixing the training sample, a budget-matched random-search baseline, and a cardinality-matched filter baseline. The gap survives all three.
+\item
+  A practical reproducibility protocol requiring no new method: repeated fixed-data runs with pairwise agreement reported alongside held-out performance.
+\end{enumerate}
+
+\textbf{Scope.} We compare NSGA-II against two baselines --- budget-matched random search and an mRMR filter --- chosen to test specific alternative explanations, not to rank methods. One filter baseline with one classifier cannot establish that filters are generally preferable to wrappers, and our own results contradict any such reading: on the low-dimensional reference dataset NSGA-II attains higher held-out accuracy than mRMR at k = 4 and k = 8. We make no causal claim about the feature-to-sample ratio: our datasets differ simultaneously in dimensionality, sample size, domain and cross-validation scheme, so every cross-dataset comparison here is an association only. High dimensionality is the \emph{context} in which the problem is consequential, not a demonstrated \emph{mechanism}.
+
+
+
+\section{Related Work}
+
+\textbf{A. Measuring stability.} Instability of feature selection was raised as a general concern by Kalousis et al.~[2], who studied it specifically in high-dimensional spaces. Many measures followed, including the widely used index of Kuncheva [6]; Nogueira et al.~[1] note that by 2018 at least fifteen distinct measures existed, mostly proposed without guidance on which to prefer. Their estimator --- defined through per-feature selection frequencies normalized by the variance expected under a null model, unbiased with respect to the number of runs, and zero when selections are no more similar than chance --- is the measure we adopt.
+
+Their definition of stability already refers to robustness with respect to data sampling \emph{and} to an algorithm's stochastic nature. The distinction we operationalize is therefore not a new conceptual proposal; it is present in the canonical definition. Our contribution is an experiment that isolates the data-sampling contribution empirically, which the standard resampling-only design cannot do. The residual is not attributed to optimizer stochasticity alone (Section V-C).
+
+Sechidis et al.~[3] later showed that stability measures systematically underestimate stability when features are correlated. Our datasets are microarray data, where correlation is expected; this caveat applies and is discussed in Section VI.
+
+\textbf{B. Evolutionary multi-objective feature selection.} The bi-objective formulation over accuracy and cardinality solved with NSGA-II originates with Hamdani et al.~[4], whose objectives were classification error with a 1-NN classifier and number of features. Subsequent variants add filter-based initialization, adaptive operators and length-variable encodings. The most common evaluation criterion in the work we reviewed is accuracy; stability is reported far less often, and where repeated runs occur they typically yield mean and variance of accuracy rather than agreement between subsets.
+
+One recent exception is directly relevant. The RBON framework [10] identifies stability as frequently overlooked and proposes a stability-aware NSGA-II in which subsets identified as stable by an ensemble of filters guide population initialization. That work and ours approach the problem from opposite directions: RBON proposes a method to \emph{improve} stability; we perform a diagnostic study to \emph{characterize} the instability of the standard formulation. Notably, RBON is evaluated on Leukemia and colon microarray data, overlapping our datasets, which makes it a natural target for such a comparison. Applying our two-condition design to such stability-aware variants is a natural continuation.
+
+\textbf{C. Filter methods.} mRMR selects features by maximising relevance to the target while minimising redundancy among the selected set, without training a classifier during selection. We use it not as a competitor but as a diagnostic control: because it is deterministic and selects a fixed number of features, it isolates two candidate explanations for the instability we observe.
+
+\textbf{D. Interpretation of multiple solutions.} Our results are consistent with the existence of multiple substantially different feature subsets of similar predictive value. We treat this as an interpretation of the observed selection behaviour, not as a demonstrated property of the underlying optimization landscape, and we do not claim it as a literature-established position.
+
+
+
+\section{Experimental Setup}
+
+\subsection{Research questions}
+
+\textbf{RQ1.} How reproducible are the feature subsets NSGA-II selects across repeated runs?
+\textbf{RQ2.} How much instability remains when the training data is held completely fixed?
+
+\subsection{Datasets}
+
+Table I summarises the datasets.
+
+\textbf{TABLE I. DATASETS}
+
+\begin{table*}[t]\centering\scriptsize
+\begin{tabular}[]{@{}llllll@{}}
+\hline
+Dataset & n & p & p/n & Class balance & Source \\
+\hline
+\hline
+Breast Cancer Wisconsin & 569 & 30 & 0.05 & 357/212 & scikit-learn \\
+Colon [7] & 62 & 2000 & 32 & 40/22 & scikit-feature [9] \\
+Leukemia [8] & 72 & 7070 & 98 & 47/25 & scikit-feature [9] \\
+\end{tabular}
+\end{table*}
+
+
+Colon and Leukemia are obtained in preprocessed form from the scikit-feature repository [9] to ensure reproducibility. Because both are redistributed benchmark versions rather than the original release matrices, we state their provenance explicitly.
+
+The Colon matrix corresponds to the 2000 highest-minimal-intensity genes across the 62 tissues described by Alon et al.~[7], whose 40 tumour / 22 normal split matches our loaded data exactly.
+
+For Leukemia we use the repository's \texttt{leukemia} matrix (72 x 7070), which is distinct from the repository's separate \texttt{ALLAML} matrix (72 x 7129): the 7070-gene version has baseline genes removed prior to analysis. The 47/25 class split of our loaded data matches Golub et al.~[8], whose 38 training samples (27 ALL, 11 AML) and 34 test samples (20 ALL, 14 AML) sum to 47 ALL and 25 AML. We note that some secondary sources report other splits for ``the Golub dataset'' (e.g.~49/23), so the specific matrix used should be stated in any work relying on it.
+
+Breast Cancer serves as a \textbf{low-dimensional reference dataset}, not an experimental control: it differs from the microarray datasets in domain, measurement technology, sample size, class balance and cross-validation scheme simultaneously.
+
+\subsection{Optimizer}
+
+The configuration is given in Table II.
+
+\textbf{TABLE II. NSGA-II CONFIGURATION}
+
+\begin{table*}[t]\centering\scriptsize
+\begin{tabular}[]{@{}ll@{}}
+\hline
+Parameter & Value \\
+\hline
+\hline
+Population / generations & 40 / 20 \\
+Selection & NSGA-II (non-dominated sorting + crowding distance) \\
+Crossover & Uniform, indpb 0.5, p\_c 0.9 \\
+Mutation & Bit-flip, indpb 1/p \\
+Initialization & Each bit set with prob min(0.05, 20/p) \\
+Classifier & kNN, k = 5 \\
+Objectives & max inner-CV balanced accuracy; min \#features \\
+\end{tabular}
+\end{table*}
+
+
+\subsection{Leakage control}
+
+Two risks were identified and controlled.
+
+\emph{Preprocessing leakage.} Standardization is fitted on the inner-training fold only.
+
+\emph{Duplicate-sample leakage.} Under bootstrap resampling the same original sample appears as several rows; a split by row position can place one copy in training and another in validation. Measured directly, only about 44 of 72 rows in a Leukemia bootstrap draw are distinct --- roughly 40\% are duplicates, some appearing four times. Group-aware splitting (LeaveOneGroupOut / GroupKFold) keyed on the pre-resampling sample index forces all copies to the same side of every split. On identical data the naive split gave 0.667 balanced accuracy where the group-aware split gave 0.591. \textbf{This failure mode is silent: it raises no error and inflates results.} We report it because bootstrap-based stability protocols are exposed to it by construction.
+
+Inner CV is LeaveOneGroupOut when unique samples $\leq$ 100 (Colon 38 folds, Leukemia 44 folds) and GroupKFold(5) otherwise (Breast Cancer).
+
+\subsection{Two conditions with matched cross-validation}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Data-resampling condition.} Each of 10 runs uses a distinct stratified bootstrap resample and a distinct optimizer seed (seeds 0--9).
+\item
+  \textbf{Search-randomness condition.} A \emph{single} bootstrap draw is held fixed across all 10 runs; only the optimizer seed varies (seeds 100--109).
+\end{itemize}
+
+Holding a fixed bootstrap draw --- rather than the original dataset --- is deliberate. It ensures both conditions have identical row counts, duplicate structure and CV folds, so the only difference is whether the draw is redrawn. An earlier version held the original dataset fixed, which forced a different CV scheme (LeaveOneOut, 72 folds vs LeaveOneGroupOut, 44 folds) and confounded the comparison; those results are not reported.
+
+\subsection{Stability measures}
+
+Each run yields a Pareto front, so a front must be reduced to one mask. Two reductions are reported: \textbf{front-level} (union over the front) and \textbf{point-level} (knee point, min--max normalizing both objectives within that front). The knee rule is not claimed uniquely correct; it is one reproducible single-solution rule. Front-level additionally depends on front size, which varies across runs (2--13 solutions), so point-level is the more defensible object.
+
+Two measures: \textbf{Nogueira $\Phi$} [1] (primary, chance-normalized) and \textbf{pairwise Jaccard} over all 45 run pairs (complementary, interpretable). The 45 pairs derive from 10 runs and are \emph{not} independent; all pair statistics are descriptive, never hypothesis tests.
+
+\subsection{Absence of confidence intervals}
+
+Two standard estimators were implemented and validated against known ground truth; both failed. Bootstrap-over-runs is upward-biased, since duplicated runs agree perfectly with themselves (on data with true $\Phi$ = 0.002, resamples with five duplicate rows averaged 0.164). Jackknife intervals are far too narrow: measured coverage of nominal 95\% intervals was 90.5\% at $\Phi$ = 0.00, 79.8\% at 0.20, 42.2\% at 0.50 and 10.8\% at 0.80 --- and our reference dataset sits at 0.37--0.49. No intervals are reported; all differences are descriptive.
+
+\subsection{Out-of-bag validation}
+
+The accuracy NSGA-II optimizes is an inner-CV estimate and is optimistically biased by construction. Each bootstrap draw leaves samples unused; these took no part in search or fitness evaluation. For each run we take the knee subset, fit kNN on in-bag data restricted to those features, and evaluate on the out-of-bag samples. OOB set sizes are 206 (Breast Cancer), 22 (Colon), 26 (Leukemia).
+
+
+
+\section{Results}
+
+\subsection{Stability against chance}
+
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig1_stability.pdf}
+\caption{Selection stability by dataset and condition, at front level (union over the Pareto front) and point level (knee solution). Bars show Nogueira's $\Phi$; higher is more reproducible.}
+\label{fig:stability}
+\end{figure*}
+
+Table III reports stability under both conditions, and Fig.~\ref{fig:stability} shows the same values graphically.
+
+\textbf{TABLE III. SELECTION STABILITY}
+
+\begin{table*}[t]\centering\scriptsize
+\begin{tabular}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1250}}@{}}
+\hline
+\begin{minipage}[b]{\linewidth}\raggedright
+Dataset
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Condition
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+$\Phi$ front
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+$\Phi$ point
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Jaccard front med (mean)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Chance mean
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Pairs sharing nothing
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Chance
+\end{minipage} \\
+\hline
+\hline
+Breast Cancer & Data resampling & 0.366 & 0.158 & 0.333 (0.352) & 0.138 & 2\% & 15\% \\
+Breast Cancer & Search randomness & 0.492 & 0.437 & 0.455 (0.450) & 0.138 & 0\% & 13\% \\
+Colon & Data resampling & 0.006 & 0.008 & 0.000 (0.006) & 0.004 & 76\% & 86\% \\
+Colon & Search randomness & 0.011 & $-$0.002 & 0.000 (0.009) & 0.004 & 76\% & 84\% \\
+Leukemia & Data resampling & 0.009 & 0.006 & 0.000 (0.007) & 0.001 & 84\% & 97\% \\
+Leukemia & Search randomness & 0.008 & 0.018 & 0.000 (0.007) & 0.001 & 87\% & 98\% \\
+\end{tabular}
+\end{table*}
+
+
+\textbf{Chance baselines are essential.} Jaccard between random subsets depends strongly on p: drawing \textasciitilde7 features from 30 produces far more incidental overlap than \textasciitilde15 from 7070. Raw Jaccard is therefore not comparable across datasets, and neither is the raw zero-overlap count. On Leukemia, 84\% of run pairs share no feature --- but \textbf{97\% would be expected under random selection}. In every condition, observed zero-overlap is \emph{lower} than chance: selection is detectably non-random everywhere. $\Phi$, being chance-normalized, is comparable across datasets and is our primary measure.
+
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig2_jaccard.pdf}
+\caption{Distribution of pairwise Jaccard similarity across all 45 run pairs per condition, with individual pairs overlaid as points. Dashed lines mark the chance level for randomly drawn subsets of the same sizes.}
+\label{fig:jaccard}
+\end{figure*}
+
+The full distribution of pairwise agreement, with chance baselines, is shown in Fig.~\ref{fig:jaccard}. Agreement on the high-dimensional datasets exceeds chance --- mean Jaccard by roughly 8$\times$ on Leukemia --- but is minimal in absolute terms: below 0.02, with the median pair sharing nothing. Chance-corrected stability is 43x lower on Leukemia (0.009 vs 0.366) and 58x lower on Colon (0.006 vs 0.366) than on the reference dataset.
+
+\subsection{Effect of holding data fixed}
+
+Table IV isolates the effect of removing data variation.
+
+\textbf{TABLE IV. STABILITY CHANGE WHEN DATA VARIATION IS REMOVED (CV matched)}
+
+\begin{table*}[t]\centering\scriptsize
+\begin{tabular}[]{@{}lllll@{}}
+\hline
+Dataset & Level & Data resampling & Search randomness & Change \\
+\hline
+\hline
+Breast Cancer & front & 0.366 & 0.492 & \textbf{+0.126} \\
+Breast Cancer & point & 0.158 & 0.437 & \textbf{+0.279} \\
+Colon & front & 0.006 & 0.011 & +0.005 \\
+Colon & point & 0.008 & $-$0.002 & $-$0.010 \\
+Leukemia & front & 0.009 & 0.008 & $-$0.001 \\
+Leukemia & point & 0.006 & 0.018 & +0.012 \\
+\end{tabular}
+\end{table*}
+
+
+On the reference dataset, eliminating data variation substantially improves stability --- expected when a source of variation is removed. On both high-dimensional datasets it changes essentially nothing: all four changes lie within ±0.012, with inconsistent sign, against a baseline already near zero.
+
+We do not claim search randomness contributes \emph{more} than data perturbation; the high-dimensional values are too small and too inconsistent in sign to support any ordering. The defensible statement is that on high-dimensional data, removing data-sampling variation was not sufficient to make feature selection reproducible.
+
+\subsection{Predictive performance}
+
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{fig4_headline.pdf}
+\caption{Median held-out (out-of-bag) accuracy against median pairwise Jaccard agreement, data-resampling condition. Dashed lines mark the chance level for agreement.}
+\label{fig:headline}
+\end{figure}
+
+Table V contrasts optimized with held-out accuracy; Fig.~\ref{fig:headline} places held-out accuracy alongside feature agreement.
+
+\textbf{TABLE V. OPTIMIZED VS. HELD-OUT ACCURACY (knee point)}
+
+\begin{table*}[t]\centering\scriptsize
+\begin{tabular}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1250}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 14\tabcolsep) * \real{0.1250}}@{}}
+\hline
+\begin{minipage}[b]{\linewidth}\raggedright
+Dataset
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Optimized (med)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+\textbf{OOB (med)}
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+OOB IQR
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+OOB range
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Gap
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Med \#features
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+OOB n
+\end{minipage} \\
+\hline
+\hline
+Breast Cancer & 0.947 & \textbf{0.930} & 0.905--0.939 & 0.899--0.958 & 0.018 & 2 & 206 \\
+Colon & 0.903 & \textbf{0.680} & 0.635--0.727 & 0.328--0.870 & 0.224 & 4 & 22 \\
+Leukemia & 0.946 & \textbf{0.774} & 0.734--0.803 & 0.684--0.972 & 0.172 & 3.5 & 26 \\
+\end{tabular}
+\end{table*}
+
+
+The optimized figure substantially overstates held-out performance on the microarray datasets --- by 17 and 22 points. Any accuracy claim must be made against the OOB column. These values are from the data-resampling condition, where each run has its own out-of-bag set.
+
+Leukemia at 0.774, IQR 0.734--0.803, is clearly above the 0.5 chance level: the subsets carry real predictive signal. Colon at 0.680 is weaker and far more variable (range 0.328--0.870, one run below chance) and should be treated as weak evidence. Colon and Leukemia OOB estimates rest on 22 and 26 samples, so a single misclassification moves them by roughly 4 points.
+
+The two high-dimensional datasets showed much larger optimism than the reference dataset. We report this as an association: the datasets differ in sample size and CV scheme as well as dimensionality, and wrapper optimism is driven substantially by the variance of the fitness estimate, which depends on n at least as much as on p.
+
+\textbf{Headline.} On Leukemia, the median run achieves 0.774 held-out balanced accuracy from a median of 3.5 of 7070 features, while the median pair of runs shares no feature and chance-corrected stability is 43x below the reference dataset.
+
+\subsection{Do disjoint subsets perform comparably?}
+
+Using the search-randomness condition --- where all runs share one fixed draw and therefore one common out-of-bag set, so every subset is evaluated on identical held-out data --- 42 of 45 Leukemia run pairs selected disjoint subsets. Held-out accuracy across the ten subsets had median 0.836, IQR 0.811--0.865, range 0.585--0.974. Disjoint pairs differed in accuracy by a median of 0.108, essentially identical to the 0.111 median difference among overlapping pairs. In this experiment, feature overlap was therefore not associated with a visibly smaller difference in held-out accuracy. With 28 held-out samples, 0.108 corresponds to roughly three samples. Given the small number of runs, the non-independence of the 45 pairs, and the limited held-out sample, we treat this as descriptive evidence rather than evidence of predictive equivalence.
+
+The reference dataset behaves differently: disjoint pairs differed by a median of 0.051 against 0.003 for overlapping pairs. Colon was too weak to interpret (median 0.594).
+
+These results are consistent with multiple substantially different subsets of similar predictive value on Leukemia, though the evidence rests on a small held-out set and we do not claim strict equivalence.
+
+\subsection{Baseline 1 --- budget-matched random search}
+
+A reviewer's first objection is that population 40 over 20 generations may be too small a budget at p = 7070 for NSGA-II to be doing meaningful work. We tested this directly with a random-search control given the \textbf{same measured budget}, the same bootstrap draws, preprocessing, group-aware CV, fitness function, run count and out-of-bag evaluation. Only the search mechanism differs. The budget was instrumented rather than assumed: 694 evaluations on Breast Cancer and 840 on Colon and Leukemia, since DEAP re-evaluates only individuals whose fitness has been invalidated. Random search returns a Pareto front, extracted as the non-dominated set of its samples and reduced identically. Subset sizes were drawn as k \textasciitilde{} Uniform\{1..min(p,50)\}, chosen in advance so the baseline covers the cardinality axis rather than being confined to a region where NSGA-II does not operate.
+
+\textbf{TABLE VI. NSGA-II VS BUDGET-MATCHED RANDOM SEARCH (Phi, front level)}
+
+\begin{table*}[t]\centering\scriptsize
+\begin{tabular}[]{@{}llll@{}}
+\hline
+Dataset & Condition & NSGA-II & Random search \\
+\hline
+\hline
+Breast Cancer & data resampling & \textbf{0.366} & 0.038 \\
+Breast Cancer & fixed draw & \textbf{0.492} & 0.084 \\
+Colon & data resampling & \textbf{0.006} & 0.002 \\
+Colon & fixed draw & \textbf{0.011} & 0.010 \\
+Leukemia & data resampling & \textbf{0.009} & 0.000 \\
+Leukemia & fixed draw & \textbf{0.008} & 0.005 \\
+\end{tabular}
+\end{table*}
+
+
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig5_random_search.pdf}
+\caption{NSGA-II against budget-matched random search under both conditions. NSGA-II is more stable in all six comparisons.}
+\label{fig:rs}
+\end{figure*}
+
+Fig.~\ref{fig:rs} shows these values. NSGA-II is more stable in all six comparisons. The search is therefore doing real work, and the near-zero stability on the microarray datasets is not simply a symptom of an inadequate budget. It also shows that effective search and reproducible selection are separate properties: NSGA-II clearly beats random sampling and still selects disjoint feature sets from one run to the next.
+
+\subsection{Baseline 2 --- mRMR at matched cardinality}
+
+The second alternative explanation is structural. mRMR selects exactly k features every time, whereas NSGA-II's knee varies between 2 and 5 features across runs, and two subsets of different sizes can never fully agree. Varying cardinality alone therefore depresses Phi, independently of which features are chosen. To test this we extracted from each saved NSGA-II front the solution nearest to k and compared at matched cardinality. mRMR uses the \texttt{mrmr-selection} implementation, which is the FCQ variant based on the F-statistic and Pearson correlation rather than classical mutual information; rankings were computed per bootstrap from training data only.
+
+In two cases every one of the ten runs landed on exactly k = 2, so cardinality is fully controlled.
+
+\textbf{TABLE VII. EXACTLY CARDINALITY-MATCHED COMPARISONS (k = 2)}
+
+\begin{table*}[t]\centering\scriptsize
+\begin{tabular}[]{@{}lllll@{}}
+\hline
+Dataset & Phi NSGA-II & Phi mRMR & OOB NSGA-II & OOB mRMR \\
+\hline
+\hline
+Breast Cancer & 0.202 & \textbf{0.667} & 0.911 & \textbf{0.928} \\
+Leukemia & \textbf{$-$0.000} & \textbf{0.311} & 0.752 & \textbf{0.884} \\
+\end{tabular}
+\end{table*}
+
+
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig6_mrmr.pdf}
+\caption{Cardinality-matched comparison against the mRMR filter baseline. Numbers below each pair give the count of distinct feature subsets returned in ten bootstraps; 10/10 means the method never repeated a selection.}
+\label{fig:mrmr}
+\end{figure*}
+
+Fig.~\ref{fig:mrmr} shows the full matched comparison. On Leukemia at exactly two features, NSGA-II's run-to-run agreement is indistinguishable from chance while mRMR's is clearly above it. The cardinality confound does not explain the difference.
+
+Across all nine comparisons --- the two exact ones above plus seven in which the nearest available NSGA-II solution was used, and which therefore carry less weight --- mRMR had higher Phi in 9 of 9. On held-out accuracy the direction was dataset-dependent: mRMR was higher on both microarray datasets at every k, while \textbf{NSGA-II was higher on Breast Cancer at k = 4 (0.947 vs 0.935) and k = 8 (0.958 vs 0.932)}. We report this reversal deliberately: it shows the finding is not that mRMR outperforms NSGA-II, and any framing requiring the filter to dominate everywhere is contradicted by our own data.
+
+\textbf{Both methods fail to reproduce feature identity; the wrapper simply fails harder.} Reporting only Phi would suggest mRMR has solved the problem. It has not. On Colon and Leukemia, mRMR returned \textbf{ten distinct feature sets out of ten bootstraps at every k} --- it never selected the same subset twice --- and on Colon its median pair of runs shares no features at all, exactly as NSGA-II's does.
+
+\textbf{TABLE VIII. AGREEMENT AND DISTINCT SUBSETS AT MATCHED CARDINALITY}
+
+\begin{table*}[t]\centering\scriptsize
+\begin{tabular}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 12\tabcolsep) * \real{0.1429}}@{}}
+\hline
+\begin{minipage}[b]{\linewidth}\raggedright
+Dataset
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+k
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+NSGA-II Jaccard med
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+NSGA-II distinct
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+mRMR Jaccard med
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+mRMR distinct
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+chance
+\end{minipage} \\
+\hline
+\hline
+Breast Cancer & 2 & 0.000 & 9/10 & 0.333 & 3/10 & 0.044 \\
+Breast Cancer & 4 & 0.167 & 10/10 & \textbf{1.000} & \textbf{1/10} & 0.078 \\
+Breast Cancer & 8 & 0.182 & 10/10 & 0.778 & 4/10 & 0.107 \\
+Colon & 2 & 0.000 & 10/10 & 0.000 & 10/10 & 0.001 \\
+Colon & 4 & 0.000 & 10/10 & 0.000 & 10/10 & 0.001 \\
+Colon & 8 & 0.000 & 10/10 & 0.143 & 10/10 & 0.002 \\
+Leukemia & 2 & 0.000 & 10/10 & 0.333 & 10/10 & 0.000 \\
+Leukemia & 4 & 0.000 & 10/10 & 0.143 & 10/10 & 0.000 \\
+Leukemia & 8 & 0.000 & 10/10 & 0.333 & 10/10 & 0.001 \\
+\end{tabular}
+\end{table*}
+
+
+Only on the low-dimensional reference dataset does either method reproduce a subset exactly, and there only mRMR does so (identical four features in all ten runs at k = 4). On the two microarray datasets neither method repeats a selection even once in ten attempts.
+
+This distinction matters for how the result should be read. The finding is not that a filter solves the reproducibility problem and a wrapper does not; it is that \textbf{feature identity is poorly reproducible for both, with the wrapper substantially worse}, while both attain useful predictive accuracy. That is the performance--reproducibility gap in its clearest form.
+
+Since mRMR is deterministic, re-running it on a fixed draw returns the identical subset. Its fixed-data stability is therefore an artifact of determinism and is not reported alongside the stochastic methods.
+
+\subsection{Accuracy--size structure}
+
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{fig3_acc_vs_size.pdf}
+\caption{Inner-CV balanced accuracy against subset size for every Pareto-optimal solution across all runs. Provided as qualitative support only.}
+\label{fig:accsize}
+\end{figure*}
+
+Fig.~\ref{fig:accsize} provides qualitative visual support rather than an independent quantitative result. Breast Cancer solutions form a tighter frontier across runs; microarray solutions form a more diffuse cloud. We define no metric of tightness and make no quantitative claim from this figure.
+
+
+
+\subsection{DISCUSSION}
+
+\subsection{Performance does not imply reproducible feature identity}
+
+On Leukemia the median run reaches 0.774 held-out accuracy from 3.5 features while the median run pair shares none. Predictive usefulness replicates; feature identity does not.
+
+A study that runs an evolutionary selector once and interprets the selected features as candidate biomarkers makes two claims. The performance claim is likely to replicate. The claim that \emph{these particular features} carry the signal is not supported by our results, since a second run of the identical procedure on identical data typically returns a disjoint set, and in our experiment overlap was not associated with more similar held-out accuracy (Section IV-D). This is an observation about selection behaviour, not about biology.
+
+\subsection{Controlling the data is not sufficient}
+
+The prevailing approach to stability measurement perturbs the data and observes disagreement. On our high-dimensional datasets, holding the training sample fixed left stability unchanged and near zero. Whatever produces the disagreement is not addressed by controlling data sampling alone. On the reference dataset the same intervention worked well. The contrast, not the magnitude comparison, is the result.
+
+\subsection{A third source we do not separate}
+
+With LeaveOneGroupOut on \textasciitilde44 unique samples, balanced accuracy takes a limited number of discrete values, so many distinct subsets receive exactly identical fitness and crowding-distance tie-breaking selects among them on grounds unrelated to quality. This is granularity of the fitness estimator rather than optimizer stochasticity, yet it is absorbed entirely into our search-randomness condition. The 17--22 point optimism gap supports this being material.
+
+\subsection{Search budget and feature exposure}
+
+A reviewer may object that population 40 over 20 generations is too small a budget at p = 7070 to characterise NSGA-II. We instrumented the actual code path rather than assuming. The measured number of fitness evaluations per run is 840 on Colon and Leukemia, and 745 on Breast Cancer --- the standard DEAP loop re-evaluates only individuals whose fitness has been invalidated, so the nominal 40 + 40x20 is an upper bound rather than the true count.
+
+Run-level feature exposure --- the number of distinct features appearing in any evaluated individual --- is 30/30 (100\%) on Breast Cancer, 1117/2000 (56\%) on Colon, and 1477/7070 (21\%) on Leukemia. We use the term \emph{exposure} deliberately: this is not search-space coverage, since the space is 2\^{}p and crossover recombines already-exposed features into new subsets.
+
+These figures bear on the objection in two ways. On Breast Cancer every feature was exposed and stability was 0.366; on Colon more than half were exposed and stability was 0.006. Limited exposure therefore does not by itself account for the near-zero stability on the microarray data. Conversely, exposure on Leukemia is genuinely low, so we do not claim our results characterise NSGA-II at arbitrary budgets --- only at the stated configuration.
+
+\subsection{Three properties that are usually conflated}
+
+Feature-selection methods are normally judged on one axis. Our results separate three that are distinct and can move independently.
+
+\textbf{Does the search find useful subsets?} Yes. NSGA-II outperformed budget-matched random search in all six stability comparisons (Fig.~\ref{fig:rs}), so it is not merely sampling.
+
+\textbf{Do the selected subsets predict well?} Yes. Held-out accuracy was 0.930, 0.680 and 0.774 on the three datasets, well above the 0.5 chance level on two of them, and on the low-dimensional reference dataset NSGA-II exceeded mRMR at k = 4 and k = 8.
+
+\textbf{Does the procedure select the same variables again?} On high-dimensional data, no. The median pair of runs shares no features, and neither NSGA-II nor mRMR repeated a selection even once in ten bootstraps.
+
+A method can therefore search effectively, predict well, and still fail to identify a reproducible feature set. These are not three symptoms of one underlying quality; they are three separate properties, and evaluating only the second --- as is common practice --- leaves the third invisible.
+
+\subsection{What the baselines rule out, and what remains}
+
+Two candidate explanations are excluded. The instability is not an artifact of an inadequate search budget, since NSGA-II beat budget-matched random search everywhere. It is not an artifact of varying subset size, since the difference from mRMR persists at exactly matched cardinality.
+
+What remains is not thereby identified. NSGA-II and mRMR differ in several ways at once: evolutionary search versus filter ranking, stochastic versus essentially deterministic behaviour, direct optimisation of a cross-validated objective versus a relevance--redundancy criterion, hundreds of fitness evaluations versus none, and a Pareto front versus a ranking. Our design narrows the space of explanations; it does not isolate which difference is responsible.
+
+The defensible reading is a hypothesis rather than a demonstrated mechanism:
+
+\begin{quote}
+The results are consistent with the hypothesis that stochastic wrapper optimisation of a noisy cross-validation estimate contributes to reduced feature-selection reproducibility.
+\end{quote}
+
+Two observations are consistent with it without establishing it. The optimism gap of 17-22 points on the microarray datasets shows the wrapper is partly fitting noise in its own fitness estimate. And on the low-dimensional reference dataset, where that estimate is nearly unbiased (gap 0.018), NSGA-II remains competitive on held-out accuracy, whereas on both high-dimensional datasets mRMR is higher at every k. We note that no corresponding ordering appears on the stability axis: Breast Cancer has the smallest optimism gap yet the largest absolute stability advantage for mRMR, so we do not claim the optimism gap tracks the stability difference.
+
+We make no claim that NSGA-II is unstable \emph{because} it is evolutionary, that filters are generally preferable to wrappers, or that evolutionary feature selection is inferior. One filter baseline, one classifier and one configuration cannot support any of these.
+
+\subsection{Practical recommendation}
+
+Because the search-randomness condition needs no data resampling and no pipeline change, any practitioner using a stochastic selector can run it \emph{n} times on fixed data and report pairwise agreement alongside held-out accuracy. Where agreement is low, conclusions about individual features should be qualified accordingly.
+
+
+
+\section{Threats To Validity And Limitations}
+
+\textbf{A. One baseline of each kind.} We compare against budget-matched random search and a single filter (mRMR, FCQ variant). This excludes two specific alternative explanations but cannot determine which property of the wrapper is responsible, nor whether other filters (LASSO, RFE) or other wrappers would behave similarly. A single filter with a single classifier cannot support a general claim about filters versus wrappers, and our Breast Cancer results run in the opposite direction. This remains the most significant interpretive limitation.
+
+\textbf{B. Three datasets, mutually confounded.} Two are microarray data and not independent in character. Every cross-dataset comparison confounds dimensionality with sample size, domain, class balance and CV scheme.
+
+\textbf{C. Single classifier and configuration.} kNN (k=5), one NSGA-II configuration. The only sensitivity check was a generation-budget increase (20→100) on Leukemia with four seeds, which did not improve stability ($\Phi$ front $-$0.002) --- indicative, not conclusive. Population size, the likelier limiting factor at p = 7070, was not varied.
+
+\textbf{D. Statistical limitations.} M = 10; no valid interval estimator (Section III-G); all differences descriptive. The 45 pairs per condition are not independent.
+
+\textbf{E. Fitness quantization} not separated from optimizer stochasticity (Section V-C).
+
+\textbf{F. Jaccard does not address feature correlation.} If two correlated genes carry equivalent information and different runs select each, Jaccard records zero overlap though the selections are near-equivalent in signal [3]. Our results bound reproducibility of feature \emph{identity}, not of biological signal.
+
+\textbf{G. Pareto reduction is a modelling choice.} Front- and point-level differ materially (Breast Cancer 0.366 vs 0.158). Front-level depends on front size and is the weaker object.
+
+\textbf{H. OOB estimates rest on few samples} for Colon (22) and Leukemia (26). Colon's 0.680 with one run below chance is weak evidence.
+
+\textbf{I. Internal validity.} Two leakage risks identified and controlled; the pipeline was audited specifically for this class of problem and all raw per-run outputs are retained. Other unidentified sources cannot be ruled out.
+
+
+
+\section{Conclusion}
+
+We studied whether NSGA-II feature selection returns reproducible feature sets, using matched cross-validation so that the two conditions differ only in whether the training sample is redrawn. On two high-dimensional microarray datasets the median pair of independent runs selected feature subsets with no overlap at all, while held-out accuracy remained informative --- 0.774 on Leukemia from a median of 3.5 of 7070 features. Holding the training sample fixed removed none of this instability, although the same intervention improved stability substantially on a low-dimensional reference dataset, and a fivefold larger generation budget did not help.
+
+Two baselines constrain the explanation. NSGA-II beat budget-matched random search in all six stability comparisons, so the instability is not a symptom of a search that never got started. An mRMR filter was more stable in all nine cardinality-matched comparisons, including two in which every run selected exactly two features, so it is not an artifact of NSGA-II's varying subset size. The filter is nevertheless not reproducible either: on both microarray datasets it returned ten distinct subsets in ten bootstraps at every k. What remains is consistent with the hypothesis that optimising a noisy cross-validation estimate degrades reproducibility, but our design cannot isolate which difference between the two methods is responsible.
+
+We report all agreement statistics against chance baselines, having found that the intuitive figure --- 84\% of run pairs sharing nothing --- is in fact better than the 97\% expected by chance at these subset sizes. We also document a silent duplicate-sample leakage mode in bootstrap-based stability protocols, and show that two standard confidence-interval estimators for the stability coefficient are unreliable in this regime.
+
+The result is not that filters beat wrappers: on the low-dimensional reference dataset NSGA-II attains higher held-out accuracy than mRMR at k = 4 and k = 8. It is that predictive performance and feature reproducibility are distinct properties that can diverge sharply --- for both method families on high-dimensional data --- and that the divergence survives controlling the training sample, the search budget and the subset size. For practitioners the operational implication needs no new method: repeated runs on fixed data, with pairwise agreement reported alongside held-out accuracy, are enough to reveal whether a selected subset is reproducible at all. Where it is not, conclusions drawn about individual selected features should be qualified accordingly.
+
+\subsection{FIGURES}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Fig.~\ref{fig:stability}} --- Nogueira stability by dataset and condition, front and point level.
+\item
+  \textbf{Fig.~\ref{fig:jaccard}} --- Pairwise Jaccard distributions with chance baselines. \emph{Primary figure.}
+\item
+  \textbf{Fig.~\ref{fig:accsize}} --- Accuracy vs subset size, all Pareto solutions. Qualitative.
+\item
+  \textbf{Fig.~\ref{fig:headline}} --- Median held-out accuracy against median Jaccard, data-resampling condition.
+\item
+  \textbf{Fig.~\ref{fig:rs}} --- NSGA-II vs budget-matched random search, both conditions.
+\item
+  \textbf{Fig.~\ref{fig:mrmr}} --- Cardinality-matched comparison against mRMR, annotated with the number of distinct subsets each method returned in ten bootstraps.
+\end{itemize}
+
+
+
+\subsection{REFERENCES}
+
+
+
+[1] S. Nogueira, K. Sechidis, and G. Brown, ``On the stability of feature selection algorithms,'' \emph{J. Mach. Learn. Res.}, vol.~18, no. 174, pp.~1--54, 2018. 
+
+[2] A. Kalousis, J. Prados, and M. Hilario, ``Stability of feature selection algorithms: a study on high-dimensional spaces,'' \emph{Knowl. Inf. Syst.}, vol.~12, no. 1, pp.~95--116, 2007. 
+
+[3] K. Sechidis, K. Papangelou, S. Nogueira, J. Weatherall, and G. Brown, ``On the stability of feature selection in the presence of feature correlations,'' in \emph{ECML PKDD 2019}, LNCS vol.~11906, Springer, 2020. 
+
+[4] T. M. Hamdani, J.-M. Won, A. M. Alimi, and F. Karray, ``Multi-objective feature selection with NSGA II,'' in \emph{Adaptive and Natural Computing Algorithms (ICANNGA 2007)}, LNCS vol.~4431, Springer, Heidelberg, 2007, pp.~240--247. 
+
+[5] K. Deb, A. Pratap, S. Agarwal, and T. Meyarivan, ``A fast and elitist multiobjective genetic algorithm: NSGA-II,'' \emph{IEEE Trans. Evol. Comput.}, vol.~6, no. 2, pp.~182--197, Apr.~2002.  
+
+[6] L. I. Kuncheva, ``A stability index for feature selection,'' in \emph{Proc. 25th IASTED Int. Multi-Conf.: Artificial Intelligence and Applications (AIAP'07)}, Innsbruck, Austria, ACTA Press, 2007, pp.~390--395. 
+
+[7] U. Alon, N. Barkai, D. A. Notterman, K. Gish, S. Ybarra, D. Mack, and A. J. Levine, ``Broad patterns of gene expression revealed by clustering analysis of tumor and normal colon tissues probed by oligonucleotide arrays,'' \emph{Proc. Natl. Acad. Sci. USA}, vol.~96, no. 12, pp.~6745--6750, 1999. 
+
+[8] T. R. Golub, D. K. Slonim, P. Tamayo, C. Huard, M. Gaasenbeek, J. P. Mesirov, H. Coller, M. L. Loh, J. R. Downing, M. A. Caligiuri, C. D. Bloomfield, and E. S. Lander, ``Molecular classification of cancer: class discovery and class prediction by gene expression monitoring,'' \emph{Science}, vol.~286, no. 5439, pp.~531--537, 1999. 
+
+[9] J. Li, K. Cheng, S. Wang, F. Morstatter, R. P. Trevino, J. Tang, and H. Liu, ``Feature selection: A data perspective,'' \emph{ACM Comput. Surv.}, vol.~50, no. 6, art. 94, 2017.  
+
+[10] K. Sangeeta and S. Kisan, ``RBON: A robust bi-objective feature selection framework using hybrid ensemble technique and NSGA-II,'' \emph{Annals of Data Science}, 2025, doi: 10.1007/s40745-025-00599-8.  
+
+
+
+
+\end{document}

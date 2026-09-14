@@ -1,0 +1,70 @@
+{
+  "seed_control": {
+    "front_level": {
+      "stability": 0.01777410489777176,
+      "M": 10,
+      "p": 7070,
+      "kbar": 16.6,
+      "numer": 0.002300801508722301,
+      "denom": 0.002342436215737153
+    },
+    "point_level": {
+      "stability": 0.015288038470126719,
+      "M": 10,
+      "p": 7070,
+      "kbar": 4.2,
+      "numer": 0.0005846298915605847,
+      "denom": 0.0005937064993628076
+    },
+    "dataset": "leukemia_allaml_SEED_CONTROL",
+    "n_samples": 72,
+    "n_features": 7070,
+    "n_bootstraps": 10,
+    "front_sizes": [
+      5,
+      5,
+      5,
+      4,
+      2,
+      8,
+      5,
+      7,
+      8,
+      8
+    ]
+  },
+  "bootstrap_fixed": {
+    "front_level": {
+      "stability": 0.008607200874971244,
+      "M": 10,
+      "p": 7070,
+      "kbar": 14.6,
+      "numer": 0.002043061449002043,
+      "denom": 0.0020607991613467267
+    },
+    "point_level": {
+      "stability": 0.0056665310920192,
+      "M": 10,
+      "p": 7070,
+      "kbar": 3.6,
+      "numer": 0.000506050605060506,
+      "denom": 0.0005089344982184621
+    },
+    "dataset": "leukemia_allaml",
+    "n_samples": 72,
+    "n_features": 7070,
+    "n_bootstraps": 10,
+    "front_sizes": [
+      7,
+      3,
+      6,
+      13,
+      11,
+      4,
+      3,
+      6,
+      5,
+      7
+    ]
+  }
+}

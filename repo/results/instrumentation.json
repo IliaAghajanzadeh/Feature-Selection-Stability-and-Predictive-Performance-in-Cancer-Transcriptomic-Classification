@@ -1,0 +1,32 @@
+{
+  "breast_cancer": {
+    "p": 30,
+    "n_evals": 745,
+    "naive_840_assumption": 840,
+    "features_exposed": 30,
+    "exposure_pct": 100.0,
+    "mean_k_per_eval": 2.9,
+    "front_size": 6,
+    "secs": 9
+  },
+  "colon": {
+    "p": 2000,
+    "n_evals": 840,
+    "naive_840_assumption": 840,
+    "features_exposed": 1117,
+    "exposure_pct": 55.9,
+    "mean_k_per_eval": 11.2,
+    "front_size": 7,
+    "secs": 48
+  },
+  "leukemia": {
+    "p": 7070,
+    "n_evals": 840,
+    "naive_840_assumption": 840,
+    "features_exposed": 1477,
+    "exposure_pct": 20.9,
+    "mean_k_per_eval": 12.9,
+    "front_size": 7,
+    "secs": 55
+  }
+}

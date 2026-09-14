@@ -1,0 +1,1166 @@
+{
+  "breast_cancer": {
+    "env": {
+      "numpy": "2.4.6",
+      "scipy": "1.15.3",
+      "sklearn": "1.6.1",
+      "deap": "1.4",
+      "python": "3.13.5",
+      "mrmr": "0.2.8"
+    },
+    "ks": [
+      2,
+      4,
+      8
+    ],
+    "runs": [
+      {
+        "bootstrap_id": 0,
+        "by_k": {
+          "2": {
+            "features": [
+              22,
+              27
+            ],
+            "oob_accuracy": 0.885,
+            "oob_set_size": 207
+          },
+          "4": {
+            "features": [
+              22,
+              27,
+              20,
+              7
+            ],
+            "oob_accuracy": 0.8963636363636365,
+            "oob_set_size": 207
+          },
+          "8": {
+            "features": [
+              22,
+              27,
+              20,
+              7,
+              23,
+              2,
+              0,
+              26
+            ],
+            "oob_accuracy": 0.9210606060606061,
+            "oob_set_size": 207
+          }
+        }
+      },
+      {
+        "bootstrap_id": 1,
+        "by_k": {
+          "2": {
+            "features": [
+              27,
+              7
+            ],
+            "oob_accuracy": 0.8884281581485053,
+            "oob_set_size": 207
+          },
+          "4": {
+            "features": [
+              27,
+              7,
+              22,
+              20
+            ],
+            "oob_accuracy": 0.916586306653809,
+            "oob_set_size": 207
+          },
+          "8": {
+            "features": [
+              27,
+              7,
+              22,
+              20,
+              6,
+              2,
+              26,
+              23
+            ],
+            "oob_accuracy": 0.9301350048216008,
+            "oob_set_size": 207
+          }
+        }
+      },
+      {
+        "bootstrap_id": 2,
+        "by_k": {
+          "2": {
+            "features": [
+              27,
+              20
+            ],
+            "oob_accuracy": 0.9384164222873901,
+            "oob_set_size": 201
+          },
+          "4": {
+            "features": [
+              27,
+              20,
+              7,
+              22
+            ],
+            "oob_accuracy": 0.9424486803519061,
+            "oob_set_size": 201
+          },
+          "8": {
+            "features": [
+              27,
+              20,
+              7,
+              22,
+              2,
+              0,
+              23,
+              26
+            ],
+            "oob_accuracy": 0.9368454126518643,
+            "oob_set_size": 201
+          }
+        }
+      },
+      {
+        "bootstrap_id": 3,
+        "by_k": {
+          "2": {
+            "features": [
+              22,
+              27
+            ],
+            "oob_accuracy": 0.9280003806985819,
+            "oob_set_size": 212
+          },
+          "4": {
+            "features": [
+              22,
+              27,
+              20,
+              7
+            ],
+            "oob_accuracy": 0.9432283239744932,
+            "oob_set_size": 212
+          },
+          "8": {
+            "features": [
+              22,
+              27,
+              20,
+              7,
+              2,
+              0,
+              23,
+              6
+            ],
+            "oob_accuracy": 0.933139811554202,
+            "oob_set_size": 212
+          }
+        }
+      },
+      {
+        "bootstrap_id": 4,
+        "by_k": {
+          "2": {
+            "features": [
+              22,
+              27
+            ],
+            "oob_accuracy": 0.9393409157188685,
+            "oob_set_size": 208
+          },
+          "4": {
+            "features": [
+              22,
+              27,
+              20,
+              7
+            ],
+            "oob_accuracy": 0.9331680762126956,
+            "oob_set_size": 208
+          },
+          "8": {
+            "features": [
+              22,
+              27,
+              20,
+              7,
+              23,
+              2,
+              0,
+              3
+            ],
+            "oob_accuracy": 0.9225235734422086,
+            "oob_set_size": 208
+          }
+        }
+      },
+      {
+        "bootstrap_id": 5,
+        "by_k": {
+          "2": {
+            "features": [
+              27,
+              20
+            ],
+            "oob_accuracy": 0.9167894736842105,
+            "oob_set_size": 201
+          },
+          "4": {
+            "features": [
+              27,
+              20,
+              7,
+              22
+            ],
+            "oob_accuracy": 0.9010526315789473,
+            "oob_set_size": 201
+          },
+          "8": {
+            "features": [
+              27,
+              20,
+              7,
+              22,
+              23,
+              2,
+              6,
+              0
+            ],
+            "oob_accuracy": 0.9419473684210526,
+            "oob_set_size": 201
+          }
+        }
+      },
+      {
+        "bootstrap_id": 6,
+        "by_k": {
+          "2": {
+            "features": [
+              27,
+              7
+            ],
+            "oob_accuracy": 0.8831928345626976,
+            "oob_set_size": 203
+          },
+          "4": {
+            "features": [
+              27,
+              7,
+              22,
+              20
+            ],
+            "oob_accuracy": 0.9426765015806111,
+            "oob_set_size": 203
+          },
+          "8": {
+            "features": [
+              27,
+              7,
+              22,
+              20,
+              6,
+              2,
+              26,
+              23
+            ],
+            "oob_accuracy": 0.9456796628029505,
+            "oob_set_size": 203
+          }
+        }
+      },
+      {
+        "bootstrap_id": 7,
+        "by_k": {
+          "2": {
+            "features": [
+              22,
+              27
+            ],
+            "oob_accuracy": 0.929360465116279,
+            "oob_set_size": 206
+          },
+          "4": {
+            "features": [
+              22,
+              27,
+              20,
+              7
+            ],
+            "oob_accuracy": 0.9343023255813954,
+            "oob_set_size": 206
+          },
+          "8": {
+            "features": [
+              22,
+              27,
+              20,
+              7,
+              2,
+              0,
+              23,
+              6
+            ],
+            "oob_accuracy": 0.9584302325581395,
+            "oob_set_size": 206
+          }
+        }
+      },
+      {
+        "bootstrap_id": 8,
+        "by_k": {
+          "2": {
+            "features": [
+              27,
+              22
+            ],
+            "oob_accuracy": 0.9379756468797564,
+            "oob_set_size": 199
+          },
+          "4": {
+            "features": [
+              27,
+              22,
+              7,
+              20
+            ],
+            "oob_accuracy": 0.9437377690802349,
+            "oob_set_size": 199
+          },
+          "8": {
+            "features": [
+              27,
+              22,
+              7,
+              20,
+              23,
+              6,
+              2,
+              26
+            ],
+            "oob_accuracy": 0.9084040008697543,
+            "oob_set_size": 199
+          }
+        }
+      },
+      {
+        "bootstrap_id": 9,
+        "by_k": {
+          "2": {
+            "features": [
+              27,
+              22
+            ],
+            "oob_accuracy": 0.9277843547946454,
+            "oob_set_size": 218
+          },
+          "4": {
+            "features": [
+              27,
+              22,
+              20,
+              7
+            ],
+            "oob_accuracy": 0.9349785993989619,
+            "oob_set_size": 218
+          },
+          "8": {
+            "features": [
+              27,
+              22,
+              20,
+              7,
+              2,
+              23,
+              26,
+              0
+            ],
+            "oob_accuracy": 0.9313814770968036,
+            "oob_set_size": 218
+          }
+        }
+      }
+    ],
+    "p": 30
+  },
+  "colon": {
+    "env": {
+      "numpy": "2.4.6",
+      "scipy": "1.15.3",
+      "sklearn": "1.6.1",
+      "deap": "1.4",
+      "python": "3.13.5",
+      "mrmr": "0.2.8"
+    },
+    "ks": [
+      2,
+      4,
+      8
+    ],
+    "runs": [
+      {
+        "bootstrap_id": 0,
+        "by_k": {
+          "2": {
+            "features": [
+              1634,
+              412
+            ],
+            "oob_accuracy": 0.59375,
+            "oob_set_size": 24
+          },
+          "4": {
+            "features": [
+              1634,
+              412,
+              1454,
+              1110
+            ],
+            "oob_accuracy": 0.59375,
+            "oob_set_size": 24
+          },
+          "8": {
+            "features": [
+              1634,
+              412,
+              1454,
+              1110,
+              764,
+              1797,
+              376,
+              896
+            ],
+            "oob_accuracy": 0.78125,
+            "oob_set_size": 24
+          }
+        }
+      },
+      {
+        "bootstrap_id": 1,
+        "by_k": {
+          "2": {
+            "features": [
+              1771,
+              790
+            ],
+            "oob_accuracy": 0.71875,
+            "oob_set_size": 22
+          },
+          "4": {
+            "features": [
+              1771,
+              790,
+              1581,
+              512
+            ],
+            "oob_accuracy": 0.8125,
+            "oob_set_size": 22
+          },
+          "8": {
+            "features": [
+              1771,
+              790,
+              1581,
+              512,
+              616,
+              896,
+              963,
+              1365
+            ],
+            "oob_accuracy": 0.7291666666666667,
+            "oob_set_size": 22
+          }
+        }
+      },
+      {
+        "bootstrap_id": 2,
+        "by_k": {
+          "2": {
+            "features": [
+              248,
+              212
+            ],
+            "oob_accuracy": 0.7544642857142857,
+            "oob_set_size": 23
+          },
+          "4": {
+            "features": [
+              248,
+              212,
+              1422,
+              1472
+            ],
+            "oob_accuracy": 0.7946428571428572,
+            "oob_set_size": 23
+          },
+          "8": {
+            "features": [
+              248,
+              212,
+              1422,
+              1472,
+              738,
+              1581,
+              1580,
+              512
+            ],
+            "oob_accuracy": 0.7946428571428572,
+            "oob_set_size": 23
+          }
+        }
+      },
+      {
+        "bootstrap_id": 3,
+        "by_k": {
+          "2": {
+            "features": [
+              1422,
+              1679
+            ],
+            "oob_accuracy": 0.46153846153846156,
+            "oob_set_size": 16
+          },
+          "4": {
+            "features": [
+              1422,
+              1679,
+              385,
+              764
+            ],
+            "oob_accuracy": 0.5,
+            "oob_set_size": 16
+          },
+          "8": {
+            "features": [
+              1422,
+              1679,
+              385,
+              764,
+              1581,
+              244,
+              1365,
+              779
+            ],
+            "oob_accuracy": 0.5897435897435898,
+            "oob_set_size": 16
+          }
+        }
+      },
+      {
+        "bootstrap_id": 4,
+        "by_k": {
+          "2": {
+            "features": [
+              1422,
+              889
+            ],
+            "oob_accuracy": 0.788888888888889,
+            "oob_set_size": 24
+          },
+          "4": {
+            "features": [
+              1422,
+              889,
+              285,
+              1670
+            ],
+            "oob_accuracy": 0.8222222222222222,
+            "oob_set_size": 24
+          },
+          "8": {
+            "features": [
+              1422,
+              889,
+              285,
+              1670,
+              1770,
+              764,
+              248,
+              1413
+            ],
+            "oob_accuracy": 0.8777777777777778,
+            "oob_set_size": 24
+          }
+        }
+      },
+      {
+        "bootstrap_id": 5,
+        "by_k": {
+          "2": {
+            "features": [
+              1422,
+              1123
+            ],
+            "oob_accuracy": 0.8571428571428572,
+            "oob_set_size": 22
+          },
+          "4": {
+            "features": [
+              1422,
+              1123,
+              1953,
+              414
+            ],
+            "oob_accuracy": 0.7571428571428571,
+            "oob_set_size": 22
+          },
+          "8": {
+            "features": [
+              1422,
+              1123,
+              1953,
+              414,
+              248,
+              896,
+              1581,
+              764
+            ],
+            "oob_accuracy": 0.719047619047619,
+            "oob_set_size": 22
+          }
+        }
+      },
+      {
+        "bootstrap_id": 6,
+        "by_k": {
+          "2": {
+            "features": [
+              896,
+              1159
+            ],
+            "oob_accuracy": 0.76890756302521,
+            "oob_set_size": 24
+          },
+          "4": {
+            "features": [
+              896,
+              1159,
+              453,
+              1059
+            ],
+            "oob_accuracy": 0.7394957983193278,
+            "oob_set_size": 24
+          },
+          "8": {
+            "features": [
+              896,
+              1159,
+              453,
+              1059,
+              364,
+              1581,
+              764,
+              512
+            ],
+            "oob_accuracy": 0.76890756302521,
+            "oob_set_size": 24
+          }
+        }
+      },
+      {
+        "bootstrap_id": 7,
+        "by_k": {
+          "2": {
+            "features": [
+              1634,
+              1296
+            ],
+            "oob_accuracy": 0.6313131313131313,
+            "oob_set_size": 20
+          },
+          "4": {
+            "features": [
+              1634,
+              1296,
+              578,
+              1410
+            ],
+            "oob_accuracy": 0.5404040404040404,
+            "oob_set_size": 20
+          },
+          "8": {
+            "features": [
+              1634,
+              1296,
+              578,
+              1410,
+              248,
+              697,
+              66,
+              806
+            ],
+            "oob_accuracy": 0.595959595959596,
+            "oob_set_size": 20
+          }
+        }
+      },
+      {
+        "bootstrap_id": 8,
+        "by_k": {
+          "2": {
+            "features": [
+              1422,
+              1504
+            ],
+            "oob_accuracy": 0.6205882352941177,
+            "oob_set_size": 27
+          },
+          "4": {
+            "features": [
+              1422,
+              1504,
+              764,
+              896
+            ],
+            "oob_accuracy": 0.8205882352941176,
+            "oob_set_size": 27
+          },
+          "8": {
+            "features": [
+              1422,
+              1504,
+              764,
+              896,
+              1413,
+              492,
+              779,
+              248
+            ],
+            "oob_accuracy": 0.8205882352941176,
+            "oob_set_size": 27
+          }
+        }
+      },
+      {
+        "bootstrap_id": 9,
+        "by_k": {
+          "2": {
+            "features": [
+              1422,
+              704
+            ],
+            "oob_accuracy": 0.6420454545454546,
+            "oob_set_size": 19
+          },
+          "4": {
+            "features": [
+              1422,
+              704,
+              1953,
+              1410
+            ],
+            "oob_accuracy": 0.5965909090909092,
+            "oob_set_size": 19
+          },
+          "8": {
+            "features": [
+              1422,
+              704,
+              1953,
+              1410,
+              1041,
+              248,
+              1992,
+              512
+            ],
+            "oob_accuracy": 0.7840909090909092,
+            "oob_set_size": 19
+          }
+        }
+      }
+    ],
+    "p": 2000
+  },
+  "leukemia": {
+    "env": {
+      "numpy": "2.4.6",
+      "scipy": "1.15.3",
+      "sklearn": "1.6.1",
+      "deap": "1.4",
+      "python": "3.13.5",
+      "mrmr": "0.2.8"
+    },
+    "ks": [
+      2,
+      4,
+      8
+    ],
+    "runs": [
+      {
+        "bootstrap_id": 0,
+        "by_k": {
+          "2": {
+            "features": [
+              3192,
+              3627
+            ],
+            "oob_accuracy": 0.9181286549707601,
+            "oob_set_size": 28
+          },
+          "4": {
+            "features": [
+              3192,
+              3627,
+              4480,
+              4787
+            ],
+            "oob_accuracy": 0.9181286549707601,
+            "oob_set_size": 28
+          },
+          "8": {
+            "features": [
+              3192,
+              3627,
+              4480,
+              4787,
+              2061,
+              4913,
+              5981,
+              1774
+            ],
+            "oob_accuracy": 0.9736842105263157,
+            "oob_set_size": 28
+          }
+        }
+      },
+      {
+        "bootstrap_id": 1,
+        "by_k": {
+          "2": {
+            "features": [
+              3192,
+              2915
+            ],
+            "oob_accuracy": 0.8222222222222222,
+            "oob_set_size": 28
+          },
+          "4": {
+            "features": [
+              3192,
+              2915,
+              1822,
+              2294
+            ],
+            "oob_accuracy": 0.9722222222222222,
+            "oob_set_size": 28
+          },
+          "8": {
+            "features": [
+              3192,
+              2915,
+              1822,
+              2294,
+              1960,
+              2061,
+              4787,
+              1774
+            ],
+            "oob_accuracy": 0.9722222222222222,
+            "oob_set_size": 28
+          }
+        }
+      },
+      {
+        "bootstrap_id": 2,
+        "by_k": {
+          "2": {
+            "features": [
+              4136,
+              4157
+            ],
+            "oob_accuracy": 0.7593582887700534,
+            "oob_set_size": 28
+          },
+          "4": {
+            "features": [
+              4136,
+              4157,
+              2064,
+              3192
+            ],
+            "oob_accuracy": 0.8636363636363636,
+            "oob_set_size": 28
+          },
+          "8": {
+            "features": [
+              4136,
+              4157,
+              2064,
+              3192,
+              2228,
+              1774,
+              2061,
+              1084
+            ],
+            "oob_accuracy": 0.9090909090909092,
+            "oob_set_size": 28
+          }
+        }
+      },
+      {
+        "bootstrap_id": 3,
+        "by_k": {
+          "2": {
+            "features": [
+              3192,
+              2292
+            ],
+            "oob_accuracy": 1.0,
+            "oob_set_size": 18
+          },
+          "4": {
+            "features": [
+              3192,
+              2292,
+              4787,
+              1719
+            ],
+            "oob_accuracy": 0.9285714285714286,
+            "oob_set_size": 18
+          },
+          "8": {
+            "features": [
+              3192,
+              2292,
+              4787,
+              1719,
+              6795,
+              1774,
+              1822,
+              1084
+            ],
+            "oob_accuracy": 1.0,
+            "oob_set_size": 18
+          }
+        }
+      },
+      {
+        "bootstrap_id": 4,
+        "by_k": {
+          "2": {
+            "features": [
+              3192,
+              1772
+            ],
+            "oob_accuracy": 0.7807017543859649,
+            "oob_set_size": 28
+          },
+          "4": {
+            "features": [
+              3192,
+              1772,
+              4306,
+              6795
+            ],
+            "oob_accuracy": 0.8654970760233918,
+            "oob_set_size": 28
+          },
+          "8": {
+            "features": [
+              3192,
+              1772,
+              4306,
+              6795,
+              4787,
+              1774,
+              1625,
+              2061
+            ],
+            "oob_accuracy": 0.9210526315789473,
+            "oob_set_size": 28
+          }
+        }
+      },
+      {
+        "bootstrap_id": 5,
+        "by_k": {
+          "2": {
+            "features": [
+              3192,
+              4423
+            ],
+            "oob_accuracy": 0.7708333333333333,
+            "oob_set_size": 25
+          },
+          "4": {
+            "features": [
+              3192,
+              4423,
+              4787,
+              1822
+            ],
+            "oob_accuracy": 0.90625,
+            "oob_set_size": 25
+          },
+          "8": {
+            "features": [
+              3192,
+              4423,
+              4787,
+              1822,
+              1960,
+              5981,
+              2582,
+              1774
+            ],
+            "oob_accuracy": 0.96875,
+            "oob_set_size": 25
+          }
+        }
+      },
+      {
+        "bootstrap_id": 6,
+        "by_k": {
+          "2": {
+            "features": [
+              3192,
+              1839
+            ],
+            "oob_accuracy": 1.0,
+            "oob_set_size": 25
+          },
+          "4": {
+            "features": [
+              3192,
+              1839,
+              1774,
+              2294
+            ],
+            "oob_accuracy": 1.0,
+            "oob_set_size": 25
+          },
+          "8": {
+            "features": [
+              3192,
+              1839,
+              1774,
+              2294,
+              1719,
+              4268,
+              2228,
+              4787
+            ],
+            "oob_accuracy": 0.95,
+            "oob_set_size": 25
+          }
+        }
+      },
+      {
+        "bootstrap_id": 7,
+        "by_k": {
+          "2": {
+            "features": [
+              3192,
+              6104
+            ],
+            "oob_accuracy": 0.8611111111111112,
+            "oob_set_size": 27
+          },
+          "4": {
+            "features": [
+              3192,
+              6104,
+              4787,
+              6795
+            ],
+            "oob_accuracy": 0.9722222222222222,
+            "oob_set_size": 27
+          },
+          "8": {
+            "features": [
+              3192,
+              6104,
+              4787,
+              6795,
+              5981,
+              1084,
+              1960,
+              1774
+            ],
+            "oob_accuracy": 0.9722222222222222,
+            "oob_set_size": 27
+          }
+        }
+      },
+      {
+        "bootstrap_id": 8,
+        "by_k": {
+          "2": {
+            "features": [
+              4787,
+              6183
+            ],
+            "oob_accuracy": 0.90625,
+            "oob_set_size": 24
+          },
+          "4": {
+            "features": [
+              4787,
+              6183,
+              3113,
+              2228
+            ],
+            "oob_accuracy": 0.9375,
+            "oob_set_size": 24
+          },
+          "8": {
+            "features": [
+              4787,
+              6183,
+              3113,
+              2228,
+              3192,
+              1774,
+              5981,
+              6795
+            ],
+            "oob_accuracy": 1.0,
+            "oob_set_size": 24
+          }
+        }
+      },
+      {
+        "bootstrap_id": 9,
+        "by_k": {
+          "2": {
+            "features": [
+              3192,
+              124
+            ],
+            "oob_accuracy": 0.91875,
+            "oob_set_size": 26
+          },
+          "4": {
+            "features": [
+              3192,
+              124,
+              4787,
+              1822
+            ],
+            "oob_accuracy": 0.91875,
+            "oob_set_size": 26
+          },
+          "8": {
+            "features": [
+              3192,
+              124,
+              4787,
+              1822,
+              1960,
+              1774,
+              2228,
+              5981
+            ],
+            "oob_accuracy": 0.91875,
+            "oob_set_size": 26
+          }
+        }
+      }
+    ],
+    "p": 7070
+  }
+}

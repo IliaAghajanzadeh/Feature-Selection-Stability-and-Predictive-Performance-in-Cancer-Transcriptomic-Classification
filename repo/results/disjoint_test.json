@@ -1,0 +1,50 @@
+{
+  "breast_cancer": {
+    "n_runs": 10,
+    "oob_n": 207,
+    "acc_med": 0.9030303030303031,
+    "acc_min": 0.8963636363636365,
+    "acc_max": 0.9543939393939394,
+    "acc_iqr": [
+      0.9001515151515151,
+      0.9030303030303031
+    ],
+    "n_disjoint": 13,
+    "n_overlap": 32,
+    "disjoint_med_diff": 0.05136363636363628,
+    "disjoint_max_diff": 0.0542424242424242,
+    "overlap_med_diff": 0.002878787878787925
+  },
+  "colon": {
+    "n_runs": 10,
+    "oob_n": 24,
+    "acc_med": 0.59375,
+    "acc_min": 0.46875,
+    "acc_max": 0.78125,
+    "acc_iqr": [
+      0.5390625,
+      0.75
+    ],
+    "n_disjoint": 45,
+    "n_overlap": 0,
+    "disjoint_med_diff": 0.125,
+    "disjoint_max_diff": 0.3125,
+    "overlap_med_diff": null
+  },
+  "leukemia": {
+    "n_runs": 10,
+    "oob_n": 28,
+    "acc_med": 0.8362573099415205,
+    "acc_min": 0.5847953216374269,
+    "acc_max": 0.9736842105263157,
+    "acc_iqr": [
+      0.810672514619883,
+      0.864766081871345
+    ],
+    "n_disjoint": 42,
+    "n_overlap": 3,
+    "disjoint_med_diff": 0.10818713450292394,
+    "disjoint_max_diff": 0.38888888888888884,
+    "overlap_med_diff": 0.11111111111111105
+  }
+}
